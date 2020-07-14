@@ -1,20 +1,21 @@
-# Script 03 du projet 5 d'OpenClassRooms - Réalisé par Hugo DAGNAS
-# Script à visée éducative !
+# Script 03 du projet 5 d'OpenClassRooms - RÃ©alisÃ© par Hugo DAGNAS
+# Script Ã  visÃ©e Ã©ducative !
 
-#Présentation du script à l'utilisateur
+#PrÃ©sentation du script Ã  l'utilisateur
 Write-Host ''
 Write-Host 'Script 03 - Hugo DAGNAS'
-Write-Host 'Bienvenue sur le script permettant de connaître les groupes d''un utilisateur Active Directory.'
+Write-Host 'Bienvenue sur le script permettant de connaÃ®tre les groupes d''un utilisateur Active Directory.'
 Write-Host ''
 
-#Demande du paramètre (nom de l'utilisateur)
-$nameUser = Read-Host 'Nom de l''utilisateur à lister'
+#Demande du paramÃ¨tre (nom de l'utilisateur)
+$nameUser = Read-Host 'Nom de l''utilisateur Ã  lister'
 
-#Récupération des membres du groupe demandé
+#RÃ©cupÃ©ration des membres du groupe demandÃ©
 $groupsMember = Get-ADUser $nameUser -Properties MemberOf
 
-#Affichage du résultat
+#Affichage du rÃ©sultat
 Write-Host 'Les groupes de l''utilisateur' $nameUser 'sont:'
 $groupsMember.MemberOf
 
 #Fin du script - Version 1.0
+#Aide: https://github.com/Hugpo/openclassrooms_p5/wiki
