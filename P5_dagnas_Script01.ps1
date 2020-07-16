@@ -1,33 +1,37 @@
-# Script 01 du projet 5 d'OpenClassRooms - Réalisé par Hugo DAGNAS
-# Script à visée éducative !
+# Script 01 du projet 5 d'OpenClassRooms - RÃ©alisÃ© par Hugo DAGNAS
+# Script Ã  visÃ©e Ã©ducative !
 
-# Version: 1.0
+# Version: 1.1
+# Documentation: https://github.com/hugodagnas/openclassrooms_p5/wiki
 
-#Présentation du script à l'utilisateur
+#PrÃ©sentation du script Ã  l'utilisateur
 Write-Host ''
 Write-Host 'Script 01 - Hugo DAGNAS'
-Write-Host 'Bienvenue sur la création d''un utlisateur Active Directory et d''un répertoire personnel.'
+Write-Host 'Bienvenue sur la crÃ©ation d''un utlisateur Active Directory et d''un rÃ©pertoire personnel.'
 Write-Host ''
 
-# Demande des paramètres pour la création du compte Active Directory
-Write-Host 'Paramètres du compte de l''utilisateur à créer:'
+
+# Demande des paramÃ¨tres pour la crÃ©ation du compte Active Directory
+Write-Host 'ParamÃ¨tres du compte de l''utilisateur Ã  crÃ©er:'
 $nom = Read-Host 'Nom de l''utilisateur'
-$prenom = Read-Host 'Prénom de l''utilisateur'
+$prenom = Read-Host 'PrÃ©nom de l''utilisateur'
 $login = Read-Host 'Identifiant de connexion (en minuscule)'
 
-# Récupération des UO possible pour l'affectation du nouvel utilisateur - Code erreur possible: 1.01
-# On récupère toutes les UO en dehors de "Domain Controllers"
+
+# RÃ©cupÃ©ration des UO possible pour l'affectation du nouvel utilisateur - Code erreur possible: 1.01
+# On rÃ©cupÃ¨re toutes les UO en dehors de "Domain Controllers"
 try
 {
     [array]$UOname = Get-ADOrganizationalUnit -Filter {name -notlike "Domain Controllers"}
 }
 catch
 {
-    Write-Host "Erreur: Impossible de récupérer la liste des Unités Organisationnelles (UO) disponible (code erreur: 1.01)"
+    Write-Host "Erreur: Impossible de rÃ©cupÃ©rer la liste des UnitÃ©s Organisationnelles (UO) disponible (code erreur: 1.01)"
     exit
 }
 
-#Affichage en liste (avec numéro de sélection) des UO disponibles - Code erreur possible: 1.02
+
+#Affichage en liste (avec numÃ©ro de sÃ©lection) des UO disponibles - Code erreur possible: 1.02
 try
 {
     for($i=0;$i -lt $UOname.count; $i++){
@@ -40,18 +44,20 @@ catch
     exit
 }
 
+
 # Demande de l'UO d'affectation du nouvel utilisateur - Code erreur possible: 1.03
 try
 {
-    [int]$userUO = Read-Host "Indiquer le numéro de l'UO d'affectation de l'utilisateur"
+    [int]$userUO = Read-Host "Indiquer le numÃ©ro de l'UO d'affectation de l'utilisateur"
 }
 catch
 {
-    Write-Host "Erreur: La donnée fournie n'est pas un nombre entier ou n'est pas valide (Code erreur: 1.03)"
+    Write-Host "Erreur: La donnÃ©e fournie n'est pas un nombre entier ou n'est pas valide (Code erreur: 1.03)"
     exit
 }
 
-# Converti le choix d'affectation (numéro) en path (lien d'affectation réel) - Code erreur possible: 1.04
+
+# Converti le choix d'affectation (numÃ©ro) en path (lien d'affectation rÃ©el) - Code erreur possible: 1.04
 try
 {
     $UOaffect = $UOname[$userUO]
@@ -63,61 +69,64 @@ catch
 }
 
 
-# Fusion dans une seule variable du nom et prénom
+# Fusion dans une seule variable du nom et prÃ©nom
 $name = $prenom + " " + $nom
 
 
-# Création de l'utilisateur et activation - Code erreur possible: 1.05
+# CrÃ©ation de l'utilisateur et activation - Code erreur possible: 1.05
 try
 {
     New-ADUser -Name $name -GivenName $prenom -Surname $nom -SamAccountName $login -UserPrincipalName $login@ACME.local -AccountPassword(ConvertTo-SecureString -AsPlainText 'p4Cd4Er3' -Force) -Path $UOaffect -ChangePasswordAtLogon $true -Enabled $true
 }
 catch
 {
-    Write-Host "Erreur: La création de l'utilisateur a échoué ! (Code erreur: 1.05)"
+    Write-Host "Erreur: La crÃ©ation de l'utilisateur a Ã©chouÃ© ! (Code erreur: 1.05)"
     exit 
 }
 
-# Ajout de l'utilisateur dans le groupe de sécurité correspondant à son affectation - Code erreur possible: 1.07
+
+# Ajout de l'utilisateur dans le groupe de sÃ©curitÃ© correspondant Ã  son affectation - Code erreur possible: 1.07
 try
 {
     Add-ADGroupMember -Identity  $UOaffect.Name  -Members $login
-    #New-ADGroup "G_$login" -Path $UOaffect.DistinguishedName -GroupScope DomainLocal
-    #Add-ADGroupMember -Identity  "G_$login"  -Members $login
 }
 catch
 {
-    Write-Host "Erreur: Impossible d'ajouter l'utilisateur au groupe de sécurité (Code erreur: 1.06)"
+    Write-Host "Erreur: Impossible d'ajouter l'utilisateur au groupe de sÃ©curitÃ© (Code erreur: 1.06)"
     exit
 }
 
 
-# Confirmation de la création de l'utilisateur
-Write-Host 'L''utilisateur créé est' $name .
-Write-Host "Son identifiant de connexion est" $login"@ACME.local et son mot de passe par défaut est p4Cd4Er3 ."
+# Confirmation de la crÃ©ation de l'utilisateur
+Write-Host 'L''utilisateur crÃ©Ã© est' $name .
+Write-Host "Son identifiant de connexion est" $login"@ACME.local et son mot de passe par dÃ©faut est p4Cd4Er3 ."
 
 
-# Création du dossier du partage "dossier personnel" - Code erreur possible: 1.07
+# CrÃ©ation du dossier du partage "dossier personnel" - Code erreur possible: 1.07
 try
 {
    New-Item -Path "K:\Shares\Dossier personnel`$\$login" -ItemType Directory 
 }
 catch
 {
-   Write-Host "Erreur: La création du dossier de l'utilisateur a échoué ! (Code erreur: 1.07)" 
+   Write-Host "Erreur: La crÃ©ation du dossier de l'utilisateur a Ã©chouÃ© ! (Code erreur: 1.07)" 
    exit 
 }
-# Création du partage réseau - Code erreur possible: 1.08
+
+
+# CrÃ©ation du partage rÃ©seau - Code erreur possible: 1.08
 try
 {
     New-SmbShare -Name "Dossier personnel ($login)$" -Path "K:\Shares\Dossier personnel`$\$login"
 }
 catch
 {
-    Write-Host "Erreur: Le partage du dossier de l'utilisateur a échoué ! (Code erreur: 1.08)" 
+    Write-Host "Erreur: Le partage du dossier de l'utilisateur a Ã©chouÃ© ! (Code erreur: 1.08)" 
     exit
 }
-# Modification des règles d'accès au dossier - Code erreur possible 1.09
+
+
+# Modification des rÃ¨gles d'accÃ¨s au dossier - Code erreur possible 1.09
 try
 {
     Grant-SmbShareAccess -Name "Dossier personnel ($login)$" -AccountName "ACME\$login" -AccessRight Full -Force
@@ -125,48 +134,14 @@ try
 }
 catch
 {
-    Write-Host "Erreur: La mise à jour des accès a échoué. (Code erreur: 1.09)" 
+    Write-Host "Erreur: La mise Ã  jour des accÃ¨s a Ã©chouÃ©. (Code erreur: 1.09)" 
     exit
 }
 
-Write-Host "Création du répertoire P en tant que dossier personnel de l'utilisateur $login réussi !"
+Write-Host "CrÃ©ation du rÃ©pertoire P en tant que dossier personnel de l'utilisateur $login rÃ©ussi !"
+
 
 # Annonce la fin de l'execution du script
-Write-Host "Information: La création de l'utilisateur est terminé sans erreur !"
+Write-Host "Information: La crÃ©ation de l'utilisateur est terminÃ© sans erreur !"
 
-
-
-
-
-
-
-
-
-
-<# # Création du dossier de l'utilisateur dans K:\Shares\$login
-try
-{
-    New-Item -Path "K:\Shares\$login" -ItemType Directory
-
-}
-catch
-{
-   Write-Host "Erreur: La création du dossier partagé de l'utilisateur a échoué ! (Code erreur: 1.07)"
-   exit  
-}
-
-# Partage du dossier sur le réseau et mise en place des autorisations
-try
-{
-    New-SmbShare -Name $login -Path "K:\Shares\$login" 
-    $acl = Get-Acl "K:\Shares\$login"
-    $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("ACME\$login","Modify","Allow")
-    $acl.SetAccessRule($accessRule)
-    $acl | Set-Acl "K:\Shares\$login"
-}
-catch
-{
-   Write-Host "Erreur: Le partage du dossier de l'utilisateur a échoué ! (Code erreur: 1.08)"
-   exit 
-}
-#>
+# Fin du script
