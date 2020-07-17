@@ -39,7 +39,7 @@ try
 }
 catch
 {
-    Write-Host "Erreur: La donnée fournie n'est pas un nombre entier (Code erreur: 02)"
+    Write-Host "Erreur: La donnée fournie n'est pas un nombre entier (Code erreur: 3.02)"
     exit 
 }
 
@@ -51,7 +51,7 @@ try
 }
 catch
 {
-    Write-Host "Erreur: Impossible de récupérer les groupes du membre demandé. (Code erreur: 03)"
+    Write-Host "Erreur: Impossible de récupérer les groupes du membre demandé. (Code erreur: 3.03)"
     exit   
 }
 
@@ -74,7 +74,7 @@ try
 }
 catch
 {
-  Write-Host "Erreur: Impossible d'afficher les groupes du membre demandé. (Code erreur: 04)"
+  Write-Host "Erreur: Impossible d'afficher les groupes du membre demandé. (Code erreur: 3.04)"
   exit    
 }
 
@@ -90,7 +90,7 @@ try
 }
 catch
 {
-    Write-Host "Erreur: La création du fichier txt de sortie a échoué (Code erreur: 2.05)"
+    Write-Host "Erreur: La création du fichier txt de sortie a échoué (Code erreur: 3.05)"
     exit 
 }
 
